@@ -22,8 +22,8 @@ class PissUser(models.Model):
     email = models.CharField(max_length=64, null=False, blank=False, unique=True)
     status = models.PositiveSmallIntegerField(default=0, blank=False, null=False)
     created_time = models.DateTimeField(auto_created=True, default=None)
-    updated_time = models.DateTimeField(auto_now=True, default=None)
-    is_deleted = models.BooleanField(default=False, blank=False, null=False)
+    updated_time = models.DateTimeField(auto_now=True)
+    is_deleted = models.BooleanField(default=False)
 
     def get_user_status(self):
         status_dict = {
@@ -51,8 +51,8 @@ class PissActiveCode(models.Model):
     used = models.BooleanField(null=False, blank=False, default=False)
     used_time = models.DateTimeField(default=None)
     created_time = models.DateTimeField(auto_created=True, default=None)
-    updated_time = models.DateTimeField(auto_now=True, default=None)
-    is_deleted = models.BooleanField(default=False, blank=False, null=False)
+    updated_time = models.DateTimeField(auto_now=True)
+    is_deleted = models.BooleanField(default=False)
 
     def get_code_status(self):
         code_status = {
@@ -83,6 +83,9 @@ class PissUserExtra(models.Model):
     # 如果该字段为true，则使用qiniu相关的信息和链接
     # 如果该字段为False，则使用本站url,302到七牛链接
     use_qiniu = models.BooleanField(default=True)
+    created_time = models.DateTimeField(auto_created=True, default=None)
+    updated_time = models.DateTimeField(auto_now=True)
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return "<{user}-{qiniu}>".format(user=self.use_id, qiniu=self.use_qiniu)
