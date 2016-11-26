@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+    
+    <style>
+    body {
+        background: url("/static/images/{{ background_number }}.jpg") no-repeat fixed center center;
+        background-size: 100%;
+        height: 100%;
+        width: 100%;
+        overflow-x: hidden;
+    }
+    .top-bar {
+        background-color: rgba(0,0,0, 0.6);
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        height: 50px;
+        display: block;
+    }
+    .brand {
+        color: #fff;
+        font-weight: 900;
+        display: inline-block;
+        float: left;
+        font-size: 2em;
+        margin-left: 15px;
+    }
+    .welcome-btn, .welcome-btn:hover {
+        float: right;
+        margin: 5px 10px 5px 0;
+        color: whitesmoke !important;
+        text-decoration: none !important;
+        display: inline-block;
+        width: 100px;
+    }
+    .title {
+        margin-top: 160px;
+        font-size: 4.6em;
+        color: white;
+        text-shadow: 10px 10px 20px #000;
+    }
+    .title section {
+        margin: 0 auto;
+        text-align: center;
+        font-weight: 700;
+    }
+    .subtitle {
+        margin-top: 20px;
+        font-size: 2em;
+        color: white;
+        text-shadow: 10px 10px 20px #000;
+    }
+    .subtitle section {
+        margin: 0 auto;
+        text-align: center;
+        color: whitesmoke;
+    }
+    .upload-box {
+        margin: 80px auto 0 auto;
+        width: 65%;
+        background-color: rgba(255, 255, 255, .8);
+        padding: 10px;
+        display: table;
+    }
+    .upload {
+        display: table-cell;
+        width: 100%;
+        margin: 0 auto;
+    }
+    .upload > div {
+        display: inline-block;
+    }
+    .upload-box > div {
+        display: inline-block;
+    }
+    .upload-by-file {
+        height: 40px;
+        display: inline-block;
+    }
+    .file {
+        position: relative;
+        display: inline-block;
+        background: rgba(255, 255, 255, 0);
+        border: 1px solid rgb(44, 132, 255);
+        padding: 5px 24px;
+        overflow: hidden;
+        color: rgb(44, 132, 255);
+        text-decoration: none;
+        text-indent: 0;
+        line-height: 30px;
+        margin: 0 30px;
+    }
+
+    .file input {
+        position: absolute;
+        font-size: 100px;
+        right: 0;
+        top: 0;
+        opacity: 0;
+    }
+
+    .file:hover {
+        background: #fff;
+        border-color: rgb(44, 132, 255);
+        color: rgb(44, 132, 255);
+        text-decoration: none;
+    }
+    .upload-by-url {
+        display: inline-block;
+        border-left: 1px solid rgba(100, 100, 100, 0.5);
+        padding-left: 30px;
+        height: 40px;
+    }
+    .upload-by-url > input {
+        width: 100%;
+        height: 100%;
+    }
+    .btn-go {
+        width: 100px;
+        height: 40px;
+        border-radius: 0;
+        margin: 0 auto;
+    }
+    .go {
+        margin-right: 2%;
+    }
+    </style>
+    
+<div class="main-body row">
+    <div class="col-md-12">
+        <div class="top-bar">
+            <div class="brand">PISS</div>
+            <div class="welcome">
+                <a role="button" class="btn btn-outline-primary welcome-btn">登录</a>
+                <a role="button" class="btn btn-outline-primary welcome-btn">注册</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <div class="row">
+            <div class="title">
+                <section>P I S S</section>
+            </div>
+            <div class="subtitle">
+                <section>私人图片存储服务</section>
+            </div>
+
+            <div class="upload-box">
+                <div class="upload">
+                    <div class="upload-by-file">
+                        <a class="file" style="vertical-align: middle"><input type="file"
+                                                                              formenctype="multipart/form-data"
+                                                                              style="vertical-align: middle">上传图片</a>
+                    </div>
+                    <div class="upload-by-url" style="width: 60%;">
+                        <input autocomplete="off" type="url" placeholder="在此处粘贴图片地址" style="vertical-align: middle">
+                    </div>
+                    <div class="go" style="float: right">
+                        <button class="btn btn-primary btn-go">上传</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+</div>
+{% endblock %}
