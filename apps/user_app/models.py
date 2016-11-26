@@ -16,7 +16,6 @@ class PissUser(models.Model):
 
     class Meta:
         db_table = "piss_users"
-        app_label = "user_app"
 
     username = models.CharField(max_length=64, null=False, blank=False, unique=True)
     password = models.CharField(max_length=512, null=False, blank=False)
@@ -46,7 +45,6 @@ class PissActiveCode(models.Model):
 
     class Meta:
         db_table = "piss_active_code"
-        app_label = "user_app"
 
     user_id = models.BigIntegerField(null=False, blank=False)
     active_code = models.CharField(max_length=64, null=False, blank=False, unique=True)
@@ -76,7 +74,6 @@ class PissUserExtra(models.Model):
     """
     class Meta:
         db_table = "piss_user_extra"
-        app_label = "user_app"
 
     user_id = models.BigIntegerField()
     access_key = models.CharField(max_length=40, blank=True)
