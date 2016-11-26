@@ -194,6 +194,12 @@ $(document).ready(function () {
             console.log("只能同时使用一种方式上传文件");
         }
 
+        if (useURL) {
+            $.post("{% url 'upload_url' %}", {url: imageURL}, function (data) {
+                console.log(data);
+            });
+        }
+
     });
 
 });
