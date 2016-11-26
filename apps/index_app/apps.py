@@ -4,4 +4,4 @@ from django.apps import AppConfig
 
 
 class IndexAppConfig(AppConfig):
-    name = 'index_app'
+    name = 'apps.index_app'
