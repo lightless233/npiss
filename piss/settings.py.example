@@ -49,7 +49,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'apps.piss.urls'
+ROOT_URLCONF = 'piss.urls'
 
 TEMPLATES = [
     {
