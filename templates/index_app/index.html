@@ -170,3 +170,32 @@
     <div class="col-md-1"></div>
 </div>
 {% endblock %}
+
+{% block script %}
+<script>
+$(document).ready(function () {
+
+    $(".btn-go").click(function () {
+        var imageURL = $(".upload-by-url > input").val();
+        var formData = new FormData();
+        formData.append("file", $(".file > input")[0].files[0]);
+
+        var useURL = false;
+        var useFile = false;
+
+        if (imageURL != "" && imageURL != null) {
+            useURL = true;
+        }
+        if ($(".file > input")[0].files[0] != undefined) {
+            useFile = true;
+        }
+        console.log(useURL);console.log(useFile);
+        if (useURL && useFile) {
+            console.log("只能同时使用一种方式上传文件");
+        }
+
+    });
+
+});
+</script>
+{% endblock %}
