@@ -33,7 +33,10 @@ def check_ssrf(url):
     logger.debug("Hostname: {0}, ip: {1}".format(hostname, ip_address))
 
     # 检查是否是内网IP
-    long_ip = unpack("!L", socket.inet_aton(ip_address))[0]
+    try:
+        long_ip = unpack("!L", socket.inet_aton(ip_address))[0]
+    except socket.error:
+        raise requests.exceptions.HTTPError
     # 按顺序分别检查: 127.0.0.0/8, 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
     if long_ip >> 24 in [127, 10] or long_ip >> 20 in [44048] or long_ip >> 16 in [49320]:
         logger.warning("Found SSRF attack: {0}".format(url))
