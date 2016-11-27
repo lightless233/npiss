@@ -17,6 +17,7 @@ class PissImages(models.Model):
     user_id = models.BigIntegerField()
     qiniu_url = models.CharField(max_length=512)
     piss_url = models.CharField(max_length=32, unique=True)
+    local_filename = models.CharField(max_length=64, unique=True, default=None)
     created_time = models.DateTimeField(auto_created=True, default=None)
     updated_time = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)
