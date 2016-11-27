@@ -1,6 +1,8 @@
 #!/usr/bin/env python2
 # coding: utf8
 
+import random
+
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -24,7 +26,11 @@ class LoginView(View):
 class RegisterView(View):
 
     def get(self, request):
-        pass
+        background_number = random.choice(range(1, 9))
+        context = {
+            "background_number": background_number,
+        }
+        return render(request, "user_app/register.html", context)
 
     def post(self, request):
         pass
