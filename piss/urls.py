@@ -19,11 +19,21 @@ from django.contrib import admin
 from apps.index_app.views import IndexView
 from apps.engine_app.views import ApiUploadImageView
 from apps.engine_app.views import ApiUploadURLView
+from apps.user_app.views import LoginView
+from apps.user_app.views import RegisterView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+
+    # index views
     url(r'^$', IndexView.as_view(), name="index"),
     url(r'^index$', IndexView.as_view(), name="index"),
+
+    # api views
     url(r'^api/upload/file$', ApiUploadImageView.as_view(), name="upload_file"),
     url(r'^api/upload/url$', ApiUploadURLView.as_view(), name="upload_url"),
+
+    # user views
+    url(r'^login$', LoginView.as_view(), name="login"),
+    url(r'^register$', RegisterView.as_view(), name='register'),
 ]
