@@ -8,7 +8,7 @@ __email__ = "root@lightless.me"
 
 
 def format_url(url):
-    if not url.startswith("http://") or not url.sartswith("https://"):
+    if not url.startswith("http://") or not url.startswith("https://"):
         return "http://" + url
     else:
         return url
