@@ -20,6 +20,7 @@ class PissUser(models.Model):
     username = models.CharField(max_length=64, null=False, blank=False, unique=True)
     password = models.CharField(max_length=512, null=False, blank=False)
     email = models.CharField(max_length=64, null=False, blank=False, unique=True)
+    token = models.CharField(max_length=64, unique=True, default="")
     status = models.PositiveSmallIntegerField(default=0, blank=False, null=False)
     created_time = models.DateTimeField(auto_created=True, default=None)
     updated_time = models.DateTimeField(auto_now=True)
