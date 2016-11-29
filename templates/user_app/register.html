@@ -192,7 +192,28 @@
                 active_code: activeCode
             };
             $.post("/register", payload, function (data) {
-
+                var notifyType = 'error';
+                if (data.code == 1001) {
+                    notifyType = 'success';
+                }
+                noty({
+                    text: data.message,
+                    theme: 'relax',
+                    type: notifyType,
+                    layout: 'top',
+                    animation: {
+                        open: {height: 'toggle'},
+                        close: {height: 'toggle'},
+                        easing: 'swing',
+                        speed: '500'
+                    },
+                    timeout: 3000,
+                    callback: {
+                        onShow: function () {
+                            $("#active_code").focus();
+                        }
+                    }
+                });
             });
 
 
