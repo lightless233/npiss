@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block head %}
+<link href="/static/css/fileinput.min.css" rel="stylesheet" >
+{% endblock %}
+
 {% block body %}
     
     <style>
@@ -29,6 +33,7 @@
         margin-left: 15px;
     }
     .welcome-btn, .welcome-btn:hover {
+        z-index: 20000;
         float: right;
         margin: 5px 10px 5px 0;
         color: whitesmoke !important;
@@ -37,7 +42,6 @@
         width: 100px;
     }
     .title {
-        margin-top: 160px;
         font-size: 4.6em;
         color: white;
         text-shadow: 10px 10px 20px #000;
@@ -59,74 +63,11 @@
         color: whitesmoke;
     }
     .upload-box {
-        margin: 80px auto 0 auto;
-        width: 65%;
-        background-color: rgba(255, 255, 255, .8);
-        padding: 10px;
-        display: table;
-    }
-    .upload {
-        display: table-cell;
-        width: 100%;
-        margin: 0 auto;
-    }
-    .upload > div {
-        display: inline-block;
-    }
-    .upload-box > div {
-        display: inline-block;
-    }
-    .upload-by-file {
-        height: 40px;
-        display: inline-block;
-    }
-    .file {
-        position: relative;
-        display: inline-block;
-        background: rgba(255, 255, 255, 0);
-        border: 1px solid rgb(44, 132, 255);
-        padding: 5px 24px;
-        overflow: hidden;
-        color: rgb(44, 132, 255);
-        text-decoration: none;
-        text-indent: 0;
-        line-height: 30px;
-        margin: 0 30px;
+{#        display: table-cell;#}
+        background-color: rgba(255,255,255,.8);
+        padding: 20px;
     }
 
-    .file input {
-        position: absolute;
-        font-size: 100px;
-        right: 0;
-        top: 0;
-        opacity: 0;
-    }
-
-    .file:hover {
-        background: #fff;
-        border-color: rgb(44, 132, 255);
-        color: rgb(44, 132, 255);
-        text-decoration: none;
-    }
-    .upload-by-url {
-        display: inline-block;
-        border-left: 1px solid rgba(100, 100, 100, 0.5);
-        padding-left: 30px;
-        height: 40px;
-    }
-    .upload-by-url > input {
-        width: 100%;
-        height: 100%;
-    }
-    .btn-go {
-        width: 100px;
-        height: 40px;
-        border-radius: 0;
-        margin: 0 auto;
-    }
-    .go {
-        margin-right: 2%;
-    }
     </style>
     
 <div class="main-body row">
@@ -134,37 +75,44 @@
         <div class="top-bar">
             <div class="brand">PISS</div>
             <div class="welcome">
-                <a role="button" class="btn btn-outline-primary welcome-btn">登录</a>
-                <a role="button" class="btn btn-outline-primary welcome-btn">注册</a>
+                <a role="button" class="btn btn-primary welcome-btn">登录</a>
+                <a role="button" class="btn btn-primary welcome-btn">注册</a>
             </div>
         </div>
     </div>
     <div class="col-md-1"></div>
-    <div class="col-md-10">
-        <div class="row">
-            <div class="title">
-                <section>P I S S</section>
-            </div>
-            <div class="subtitle">
-                <section>私人图片存储服务</section>
-            </div>
-
-            <div class="upload-box">
-                <div class="upload">
-                    <div class="upload-by-file">
-                        <a class="file" style="vertical-align: middle"><input type="file"
-                                                                              formenctype="multipart/form-data"
-                                                                              style="vertical-align: middle">上传图片</a>
-                    </div>
-                    <div class="upload-by-url" style="width: 60%;">
-                        <input autocomplete="off" type="url" placeholder="在此处粘贴图片地址" style="vertical-align: middle">
-                    </div>
-                    <div class="go" style="float: right">
-                        <button class="btn btn-primary btn-go">上传</button>
-                    </div>
+    <div class="col-md-10" style="margin-top: 120px">
+        <div class="row title-box">
+            <div class="col-md-12">
+                <div class="title">
+                    <section>P I S S</section>
                 </div>
             </div>
-
+            <div class="col-md-12">
+                <div class="subtitle">
+                    <section>私人图片存储服务</section>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 40px">
+            <div class="col-md-12">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                    <div class="row upload-box">
+                        <div class="col-md-12">
+                            <input type="file" id="upload_file" multiple class="file-loading">
+                            <div id="errorBlock" class="help-block"></div>
+                        </div>
+                        <div class="col-md-10 url-box form-group">
+                            <input type="url" class="form-control js-image-url" placeholder="或粘贴图片地址到这里上传">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" style="width: 100%;" class="btn btn-success js-upload-by-url">上传</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
         </div>
     </div>
     <div class="col-md-1"></div>
@@ -172,34 +120,46 @@
 {% endblock %}
 
 {% block script %}
+    <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/static/js/fileinput.min.js"></script>
+    <script src="/static/js/zh.js"></script>
 <script>
 $(document).ready(function () {
 
-    $(".btn-go").click(function () {
-        var imageURL = $(".upload-by-url > input").val();
-        var formData = new FormData();
-        formData.append("file", $(".file > input")[0].files[0]);
+    var upload_file_url = '/api/upload/file';
+    var upload_url_url = '/api/upload/url';
 
-        var useURL = false;
-        var useFile = false;
+    $("#upload_file").fileinput({
+        uploadUrl: upload_file_url,
+        language: 'zh',
+        maxFilePreviewSize: 10240,
+        maxFileSize: 10240,
+        maxFileCount: 5,
+        dropZoneTitle: "拖动文件到这里",
+        allowedFileTypes: ['image']
+    });
 
-        if (imageURL != "" && imageURL != null) {
-            useURL = true;
-        }
-        if ($(".file > input")[0].files[0] != undefined) {
-            useFile = true;
-        }
-        console.log(useURL);console.log(useFile);
-        if (useURL && useFile) {
-            console.log("只能同时使用一种方式上传文件");
-        }
-
-        if (useURL) {
-            $.post("{% url 'upload_url' %}", {url: imageURL}, function (data) {
-                console.log(data);
+    $(".js-upload-by-url").on("click", function () {
+        var imageUrl = $(".js-image-url").val();
+        if (imageUrl == "") {
+            noty({
+                layout: "top",
+                theme: "relax",
+                type: "error",
+                text: "请输入正确的URL",
+                timeout: 5000,
+                animation: {
+                    open: {height: 'toggle'},
+                    close: {height: 'toggle'},
+                    easing: 'swing',
+                    speed: 500
+                }
+            });
+        } else {
+            $.post(upload_url_url, {url: imageUrl}, function (data) {
+                $("#errorBlock").html(data);
             });
         }
-
     });
 
 });
