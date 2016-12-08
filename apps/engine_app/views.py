@@ -2,7 +2,7 @@
 # coding: utf8
 
 import os
-from StringIO import StringIO
+from cStringIO import StringIO
 from PIL import Image
 
 from django.http import HttpResponse
@@ -23,20 +23,49 @@ from utils.CommonFunc import generate_random_string
 __author__ = 'lightless'
 __email__ = 'root@lightless.me'
 
+# todo: 限制文件大小
 
 @method_decorator(csrf_exempt, name="dispatch")
 class ApiUploadImageView(View):
 
     def post(self, request):
-        print request.POST
-        return JsonResponse({"foo": "bar"})
+        images = request.FILES["file_data"]
+
+        if "image" not in images.content_type:
+            return JsonResponse(dict(code=1004, message=u"图片格式错误"))
+
+        tmp_filename = generate_random_string()
+        raw_images = StringIO()
+        for chunk in images.chunks():
+            logger.debug("Image size: {0}".format(len(chunk)))
+            raw_images.write(chunk)
+
+        tmp_path = settings.IMAGE_TMP_PATH
+        thumb_path = settings.IMAGE_THUMB_PATH
+        if not os.path.exists(tmp_path):
+            os.mkdir(tmp_path)
+        if not os.path.exists(thumb_path):
+            os.mkdir(thumb_path)
+        try:
+            i = Image.open(raw_images)
+        except IOError:
+            return JsonResponse(dict(code=1004, message=u"图片格式错误"))
+        # 存储图片原图
+        i.save(os.path.join(tmp_path, tmp_filename + "." + i.format.lower()))
+        logger.info("Save to {0}".format(os.path.join(tmp_path, tmp_filename + "." + i.format.lower())))
+        # 存储缩略图
+        i.thumbnail((128, 128))
+        i.save(os.path.join(thumb_path, tmp_filename + "." + i.format.lower()))
+
+        # todo: get current user information
+        # todo: save to database
+        return JsonResponse(dict(code=1001, message=u"上传成功"))
 
 
 @method_decorator(csrf_exempt, name="dispatch")
 class ApiUploadURLView(View):
 
     def post(self, request):
-        print request.POST
         url = request.POST.get("url", "")
         if url == "":
             return JsonResponse(dict(code=1004, message=u"URL不能为空"))
@@ -56,7 +85,7 @@ class ApiUploadURLView(View):
         content_type = r.headers.get("Content-Type", "")
 
         logger.info("GET {url} - {code} - {type}".format(url=url, code=r.status_code, type=r.headers["Content-Type"]))
-        if code == 200 and "image" in content_type:
+        if int(code) == 200 and "image" in content_type:
             # 下载图片到临时文件夹
             tmp_path = settings.IMAGE_TMP_PATH
             thumb_path = settings.IMAGE_THUMB_PATH
@@ -73,11 +102,10 @@ class ApiUploadURLView(View):
             i.thumbnail((128, 128))
             i.save(os.path.join(thumb_path, tmp_filename + "." + i.format.lower()))
 
-            # 获取当前用户user_id
+            # todo: 获取当前用户user_id
             # todo: save to database
+            return JsonResponse(dict(code=1001, message=u"上传成功"))
 
         else:
             return JsonResponse(dict(code=1004, message=u"请输入正确的URL"))
-
-        return HttpResponse("hello")
 

@@ -31,6 +31,11 @@
         float: left;
         font-size: 2em;
         margin-left: 15px;
+        margin-top: 5px;
+    }
+    .brand > a {
+        text-decoration: none;
+        color: white;
     }
     .welcome-btn, .welcome-btn:hover {
         z-index: 20000;
@@ -73,10 +78,10 @@
 <div class="main-body row">
     <div class="col-md-12">
         <div class="top-bar">
-            <div class="brand">PISS</div>
+            <div class="brand"><a href="{% url 'index' %}">PISS</a></div>
             <div class="welcome">
-                <a role="button" class="btn btn-primary welcome-btn">登录</a>
-                <a role="button" class="btn btn-primary welcome-btn">注册</a>
+                <a role="button" class="btn btn-primary welcome-btn" href="{% url 'login' %}">登录</a>
+                <a role="button" class="btn btn-primary welcome-btn" href="{% url 'register' %}">注册</a>
             </div>
         </div>
     </div>
@@ -137,7 +142,29 @@ $(document).ready(function () {
         maxFileCount: 5,
         dropZoneTitle: "拖动文件到这里",
         allowedFileTypes: ['image']
+    }).on("fileuploaded", function (event, data, previewId, index) {
+        console.log(data.response);
+        var notyType = "error";
+        if (data.response.code == 1001) {
+            notyType = "success";
+        }
+
+        noty({
+            layout: "center",
+            theme: "relax",
+            type: notyType,
+            text: data.response.message,
+            timeout: 5000,
+            animation: {
+                open: {height: 'toggle'},
+                close: {height: 'toggle'},
+                easing: 'swing',
+                speed: 500
+            }
+        });
+
     });
+
 
     $(".js-upload-by-url").on("click", function () {
         var imageUrl = $(".js-image-url").val();
@@ -157,7 +184,23 @@ $(document).ready(function () {
             });
         } else {
             $.post(upload_url_url, {url: imageUrl}, function (data) {
-                $("#errorBlock").html(data);
+                var notyType = "error";
+                if (data.code == 1001) {
+                    notyType = "success";
+                }
+                noty({
+                    layout: "center",
+                    theme: "relax",
+                    type: notyType,
+                    text: data.message,
+                    timeout: 5000,
+                    animation: {
+                        open: {height: 'toggle'},
+                        close: {height: 'toggle'},
+                        easing: 'swing',
+                        speed: 500
+                    }
+                });
             });
         }
     });
