@@ -5,6 +5,7 @@ import random
 import threading
 import base64
 import hashlib
+import datetime
 
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
@@ -12,6 +13,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.http import JsonResponse
 from django.db.models import Q
+from django.core.urlresolvers import reverse
 
 from .forms import RegisterForm
 from .models import PissUser
@@ -19,6 +21,7 @@ from .models import PissUserExtra
 from .models import PissActiveCode
 from utils.CommonFunc import send_mail as send_mail_thread_func
 from utils.logHelper import logger
+from utils import CommonFunc
 
 __author__ = 'lightless'
 __email__ = 'root@lightless.me'
@@ -52,9 +55,8 @@ class RegisterView(View):
         if register_form.is_valid():
             # 表单验证成功
             # 1. 验证active code的可用性
-            print register_form.cleaned_data
             ac = register_form.cleaned_data.get("active_code")
-            active_code_qs = PissActiveCode.objects.filter(user_id=0, active_code=ac)
+            active_code_qs = PissActiveCode.objects.filter(user_id=0, active_code=ac).first()
             if not active_code_qs:
                 return JsonResponse(dict(code=1004, message=u"激活码无效"))
 
@@ -66,18 +68,32 @@ class RegisterView(View):
                 return JsonResponse(dict(code=1004, message=u"用户名或邮箱已存在"))
 
             # 3. 更新active code状态， 插入用户数据，extra数据
+            # 3.1 插入用户数据
             new_user = PissUser()
             new_user.username = username
             new_user.email = email
             new_user.save_password(register_form.cleaned_data.get("password"))
             new_user.status = 9001
+            new_user.token = CommonFunc.generate_random_string(64)
             new_user.save()
+            # 3.2 插入用户extra数据
             new_user_extra = PissUserExtra()
             new_user_extra.user_id = new_user.id
             new_user_extra.save()
+            # 3.3 更新激活码状态
+            active_code_qs.user_id = new_user.id
+            active_code_qs.used = True
+            active_code_qs.used_time = datetime.datetime.now()
+            active_code_qs.save()
 
             # 4. 发送激活邮件
-            send_mail_thread = threading.Thread(target=send_mail_thread_func)
+            info = base64.b32encode(str(new_user.id) + "|" + new_user.email)
+            sign = hashlib.md5(new_user.token + username + email).hexdigest()
+            active_link = request.build_absolute_uri(reverse("validate_email")) + "?info={info}&sign={sign}"
+            active_link = active_link.format(info=info, sign=sign)
+            logger.info(active_link)
+
+            send_mail_thread = threading.Thread(target=send_mail_thread_func, kwargs={"active_link": active_link})
             send_mail_thread.start()
 
             # 5. 返回成功信息
@@ -97,6 +113,8 @@ class ValidEmailView(View):
         # info = base32(id + | + email)
         sign = request.GET.get("sign", "")
         info = request.GET.get("info", "")
+        logger.debug("GET sign: {0}".format(sign))
+        logger.debug("GET info: {0}".format(info))
 
         if sign == "":
             return JsonResponse(dict(code=1004, message=u"激活失败"))
@@ -105,9 +123,11 @@ class ValidEmailView(View):
 
         try:
             info = base64.b32decode(info).split("|")
-            qs = PissUser.objects.filter(id=int(info[0].strip()), email=info[1].strip()).exists()
+            qs = PissUser.objects.filter(id=int(info[0].strip()), email=info[1].strip()).exclude(status=9002).first()
             if qs:
                 if sign == hashlib.md5(qs.token + qs.username + qs.email).hexdigest():
+                    qs.status = 9002
+                    qs.save()
                     return JsonResponse(dict(code=1001, message=u"激活成功"))
             return JsonResponse(dict(code=1004, message=u"激活失败"))
         except Exception as e:

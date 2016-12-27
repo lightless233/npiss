@@ -22,7 +22,7 @@ def generate_random_string(length=12):
     return "".join([random.choice(pool) for i in range(length)])
 
 
-def send_mail():
+def send_mail(active_link=None):
     pass
 
 
