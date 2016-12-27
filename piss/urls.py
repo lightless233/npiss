@@ -22,6 +22,7 @@ from apps.engine_app.views import ApiUploadURLView
 from apps.user_app.views import LoginView
 from apps.user_app.views import RegisterView
 from apps.user_app.views import ValidEmailView
+from apps.user_app import ManagerController
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -37,5 +38,10 @@ urlpatterns = [
     # user views
     url(r'^login$', LoginView.as_view(), name="login"),
     url(r'^register$', RegisterView.as_view(), name='register'),
-    url(r'^v_email$', ValidEmailView.as_view(), name="validate_email")
+    url(r'^v_email$', ValidEmailView.as_view(), name="validate_email"),
+
+    # manage controller start
+    url(r'^manage/generate/ac$', ManagerController.GenerateACView.as_view(), name="generate_ac"),
+    url(r'^manage/get/ac$', ManagerController.QueryACView.as_view(), name="get_ac"),
+    # manage controller end
 ]
