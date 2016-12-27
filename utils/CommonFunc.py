@@ -21,6 +21,11 @@ def generate_random_string(length=12):
     pool = string.ascii_letters + string.digits
     return "".join([random.choice(pool) for i in range(length)])
 
+
+def send_mail():
+    pass
+
+
 if __name__ == '__main__':
     def main():
         print generate_random_string()

@@ -25,7 +25,7 @@ class RegisterForm(forms.Form):
         'max_length': u"密码不能超过64个字符",
         'min_length': u"密码不能少于6个字符",
     })
-    active_code = forms.CharField(label="ActiveCode", max_length=64, min_length=64, error_messages={
+    active_code = forms.CharField(label="ActiveCode", max_length=64, min_length=6, error_messages={
         'required': u"激活码不能为空",
         'max_length': u"请输入正确的邀请码",
         'min_length': u"请输入正确的邀请码",

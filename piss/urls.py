@@ -21,6 +21,7 @@ from apps.engine_app.views import ApiUploadImageView
 from apps.engine_app.views import ApiUploadURLView
 from apps.user_app.views import LoginView
 from apps.user_app.views import RegisterView
+from apps.user_app.views import ValidEmailView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -36,4 +37,5 @@ urlpatterns = [
     # user views
     url(r'^login$', LoginView.as_view(), name="login"),
     url(r'^register$', RegisterView.as_view(), name='register'),
+    url(r'^v_email$', ValidEmailView.as_view(), name="validate_email")
 ]

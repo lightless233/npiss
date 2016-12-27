@@ -4,6 +4,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.contrib.auth.hashers import make_password, check_password
 
 __author__ = 'lightless'
 __email__ = 'root@lightless.me'
@@ -21,10 +22,18 @@ class PissUser(models.Model):
     password = models.CharField(max_length=512, null=False, blank=False)
     email = models.CharField(max_length=64, null=False, blank=False, unique=True)
     token = models.CharField(max_length=64, unique=True, default="")
-    status = models.PositiveSmallIntegerField(default=0, blank=False, null=False)
-    created_time = models.DateTimeField(auto_created=True, default=None)
+    status = models.PositiveSmallIntegerField(default=9001, blank=False, null=False)
+    last_login_time = models.DateTimeField(default=None, null=True, blank=True)
+    last_login_ip = models.CharField(max_length=16, blank=True)
+    created_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)
+
+    def save_password(self, new_password):
+        self.password = make_password(new_password)
+
+    def verify_password(self, input_password):
+        return check_password(input_password, self.password)
 
     def get_user_status(self):
         status_dict = {
@@ -32,8 +41,10 @@ class PissUser(models.Model):
             9002: {"message": u"用户正常", },
             9003: {"message": u"用户被禁止登录", },
         }
-
-        return status_dict[self.status]
+        try:
+            return status_dict[self.status]
+        except KeyError:
+            return "Unknown Status"
 
     def __str__(self):
         return "<{username}, {status}>".format(username=self.username, status=self.get_user_status())
@@ -47,11 +58,12 @@ class PissActiveCode(models.Model):
     class Meta:
         db_table = "piss_active_code"
 
-    user_id = models.BigIntegerField(null=False, blank=False)
+    # user_id 存储哪个用户使用了这个激活码，如果没人使用，则置为0
+    user_id = models.BigIntegerField(null=False, blank=False, default=0)
     active_code = models.CharField(max_length=64, null=False, blank=False, unique=True)
     used = models.BooleanField(null=False, blank=False, default=False)
-    used_time = models.DateTimeField(default=None)
-    created_time = models.DateTimeField(auto_created=True, default=None)
+    used_time = models.DateTimeField(default=None, null=True)
+    created_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)
 
@@ -79,12 +91,12 @@ class PissUserExtra(models.Model):
     user_id = models.BigIntegerField()
     access_key = models.CharField(max_length=40, blank=True)
     secret_key = models.CharField(max_length=40, blank=True)
-    domain = models.CharField(max_length=255)
+    domain = models.CharField(max_length=255, blank=True)
 
     # 如果该字段为true，则使用qiniu相关的信息和链接
     # 如果该字段为False，则使用本站url,302到七牛链接
     use_qiniu = models.BooleanField(default=True)
-    created_time = models.DateTimeField(auto_created=True, default=None)
+    created_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)
 
