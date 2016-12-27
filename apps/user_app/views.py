@@ -128,9 +128,11 @@ class ValidEmailView(View):
                 if sign == hashlib.md5(qs.token + qs.username + qs.email).hexdigest():
                     qs.status = 9002
                     qs.save()
-                    return JsonResponse(dict(code=1001, message=u"激活成功"))
-            return JsonResponse(dict(code=1004, message=u"激活失败"))
+                    context = dict(code=1001, message=u"激活成功")
+            context = dict(code=1004, message=u"激活失败")
         except Exception as e:
             logger.error(e)
-            return JsonResponse(dict(code=1004, message=u"激活失败"))
+            context = dict(code=1004, message=u"激活失败")
+        finally:
+            return render(request, "user_app/validate_email.html", context=context)
 
