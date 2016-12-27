@@ -121,15 +121,22 @@ class ValidEmailView(View):
         if info == "":
             return JsonResponse(dict(code=1004, message=u"激活失败"))
 
+        context = {
+            "code": 1004,
+            "message": u"未知错误",
+        }
         try:
             info = base64.b32decode(info).split("|")
             qs = PissUser.objects.filter(id=int(info[0].strip()), email=info[1].strip()).exclude(status=9002).first()
-            if qs:
-                if sign == hashlib.md5(qs.token + qs.username + qs.email).hexdigest():
-                    qs.status = 9002
-                    qs.save()
-                    context = dict(code=1001, message=u"激活成功")
-            context = dict(code=1004, message=u"激活失败")
+            if qs and sign == hashlib.md5(qs.token + qs.username + qs.email).hexdigest():
+                qs.status = 9002
+                qs.save()
+                context = dict(
+                    code=1001,
+                    message=u"激活成功,将自动跳转到登录页...如果没有跳转，请点击<a href={url}>这里</a>".format(url=reverse("login"))
+                )
+            else:
+                context = dict(code=1004, message=u"激活失败")
         except Exception as e:
             logger.error(e)
             context = dict(code=1004, message=u"激活失败")
