@@ -30,11 +30,42 @@ __email__ = 'root@lightless.me'
 @method_decorator(csrf_exempt, name="dispatch")
 class LoginView(View):
 
-    def get(self, request):
-        pass
+    @staticmethod
+    def get(request):
+        background_number = random.choice(range(1, 9))
+        context = {
+            "background_number": background_number,
+        }
+        return render(request, "user_app/login.html", context=context)
 
-    def post(self, request):
-        pass
+    @staticmethod
+    def post(request):
+
+        # 获取参数
+        username_or_email = request.POST.get("username_or_email", "")
+        if username_or_email == "":
+            return JsonResponse(dict(code=1004, messsage=u"请输入用户名或密码"))
+        password = request.POST.get("password", "")
+        if password == "":
+            return JsonResponse(dict(code=1004, message=u"请输入密码"))
+
+        if "@" in username_or_email:
+            # 这是个邮箱地址
+            qs = PissUser.objects.filter(email=username_or_email).first()
+            if qs and qs.verify_password(password):
+                # 登录成功
+                pass
+            else:
+                # 登录失败
+                return JsonResponse(dict(code=1004, message=u"用户名或密码错误"))
+
+        else:
+            qs = PissUser.objects.filter(username=username_or_email).first()
+            if qs and qs.verify_password(password):
+                pass
+            else:
+                # 登录失败
+                return JsonResponse(dict(code=1004, message=u"用户名或密码错误"))
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -62,6 +93,8 @@ class RegisterView(View):
 
             # 2. 检查用户名和邮箱是否已经被注册
             username = register_form.cleaned_data.get("username")
+            if "@" in username:
+                return JsonResponse(dict(code=1004, message=u"用户名中不能含有@符号"))
             email = register_form.cleaned_data.get("email")
             user_qs = PissUser.objects.filter(Q(username=username) | Q(email=email)).exists()
             if user_qs:

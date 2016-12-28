@@ -1,10 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>PISS - 登录</title>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+        <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        body {
+            background: url("/static/images/{{ background_number }}.jpg") no-repeat fixed center center;
+            background-size: 100%;
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+        }
+    </style>
 </head>
-<body>
 
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="login-panel panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">登录 PISS</h3>
+                </div>
+                <div class="panel-body">
+                    <form role="form">
+                        <fieldset>
+                            <div class="form-group">
+                                <label for="username">用户名或邮箱：</label>
+                                <input type="text" autocomplete="off" class="form-control" placeholder="请输入用户名或邮箱" id="username">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">密码：</label>
+                                <input autocomplete="off" class="form-control" placeholder="请输入密码" id="password" type="password">
+                            </div>
+                            <button id="login" type="button" class="btn btn-success btn-block">登录</button>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/jquery.noty.packaged.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/sb-admin-2.min.js"></script>
+<script src="/static/js/common.js"></script>
+<script>
+$(document).ready(function () {
+  $("#login").on("click", function () {
+    let username_or_email = $("#username").val();
+    let password = $("#password").val();
+    if (username_or_email == "") {
+        makeNoty("请输入用户名或邮箱", function () {
+            $("#username").focus()
+        });
+        return false;
+    }
+    if (password == "") {
+        makeNoty("请输入密码", function () {
+            $("#password").focus();
+        });
+        return false;
+    }
+    $.post("/login",
+        {"username_or_password": username_or_email, "password": password},
+        function (data) {
+        let type = "error";
+        if (data.code == 1001) {
+            type = "success";
+        }
+        makeNoty(data.message, type);
+    });
+  });
+});
+</script>
 </body>
 </html>
