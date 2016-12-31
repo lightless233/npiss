@@ -2,7 +2,7 @@
  * Created by lightless on 2016/12/28.
  */
 
-function makeNoty(message, cb=function(){}, type="error", layout="top") {
+function makeNoty(message, type="error", layout="top", cb=function(){}) {
     noty({
         text: message,
         theme: 'relax',

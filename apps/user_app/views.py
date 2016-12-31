@@ -1,6 +1,8 @@
 #!/usr/bin/env python2
 # coding: utf8
 
+from __future__ import unicode_literals
+
 import random
 import threading
 import base64
@@ -54,7 +56,10 @@ class LoginView(View):
             qs = PissUser.objects.filter(email=username_or_email).first()
             if qs and qs.verify_password(password):
                 # 登录成功
-                pass
+                request.session["login"] = True
+                request.session["user_id"] = qs.id
+                request.session["username"] = qs.username
+                return JsonResponse(dict(code=1001, message="登录成功，跳转中..."))
             else:
                 # 登录失败
                 return JsonResponse(dict(code=1004, message=u"用户名或密码错误"))
@@ -62,7 +67,11 @@ class LoginView(View):
         else:
             qs = PissUser.objects.filter(username=username_or_email).first()
             if qs and qs.verify_password(password):
-                pass
+                # 登录成功
+                request.session["login"] = True
+                request.session["user_id"] = qs.id
+                request.session["username"] = qs.username
+                return JsonResponse(dict(code=1001, message="登录成功，跳转中..."))
             else:
                 # 登录失败
                 return JsonResponse(dict(code=1004, message=u"用户名或密码错误"))

@@ -10,6 +10,7 @@
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/sb-admin-2.min.css" rel="stylesheet">
     <link href="/static/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <script src="/static/js/jquery.min.js"></script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -54,9 +55,9 @@
         </div>
     </div>
 </div>
-<script src="/static/js/jquery.min.js"></script>
 <script src="/static/js/jquery.noty.packaged.min.js"></script>
 <script src="/static/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/metisMenu/2.6.1/metisMenu.min.js"></script>
 <script src="/static/js/sb-admin-2.min.js"></script>
 <script src="/static/js/common.js"></script>
 <script>
@@ -65,25 +66,27 @@ $(document).ready(function () {
     let username_or_email = $("#username").val();
     let password = $("#password").val();
     if (username_or_email == "") {
-        makeNoty("请输入用户名或邮箱", function () {
+        makeNoty("请输入用户名或邮箱", "error", "top", function () {
             $("#username").focus()
         });
         return false;
     }
     if (password == "") {
-        makeNoty("请输入密码", function () {
+        makeNoty("请输入密码", "error", "top", function () {
             $("#password").focus();
         });
         return false;
     }
     $.post("/login",
-        {"username_or_password": username_or_email, "password": password},
+        {"username_or_email": username_or_email, "password": password},
         function (data) {
-        let type = "error";
+
         if (data.code == 1001) {
-            type = "success";
+            makeNoty(data.message, "success");
+            setTimeout("window.location.href='/home/index'", 3000);
+        } else {
+            makeNoty(data.message, "error");
         }
-        makeNoty(data.message, type);
     });
   });
 });
