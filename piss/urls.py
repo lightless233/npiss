@@ -1,3 +1,4 @@
+# coding: utf-8
 """piss URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -23,6 +24,7 @@ from apps.user_app.views import LoginView
 from apps.user_app.views import RegisterView
 from apps.user_app.views import ValidEmailView
 from apps.user_app import ManagerController
+from apps.user_app import HomeController
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -44,4 +46,9 @@ urlpatterns = [
     url(r'^manage/generate/ac$', ManagerController.GenerateACView.as_view(), name="generate_ac"),
     url(r'^manage/get/ac$', ManagerController.QueryACView.as_view(), name="get_ac"),
     # manage controller end
+
+    # 用户个人中心部分路由 开始 ##
+    url(r'^home/index$', HomeController.DashboardView.as_view(), name="home_dashboard"),
+    url(r'^home/images$', HomeController.ImageListView.as_view(), name="home_image_list"),
+    # 用户个人中心部分路由 结束 ##
 ]
