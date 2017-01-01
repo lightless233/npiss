@@ -46,6 +46,10 @@
         display: inline-block;
         width: 100px;
     }
+    .no-border {
+      border: none;
+      background: none;
+    }
     .title {
         font-size: 4.6em;
         color: white;
@@ -80,8 +84,12 @@
         <div class="top-bar">
             <div class="brand"><a href="{% url 'index' %}">PISS</a></div>
             <div class="welcome">
+              {% if request.session.login %}
+                <a style="width: 120px;" role="button" class="btn btn-primary welcome-btn no-border" href="{% url 'home_dashboard' %}">欢迎, {{ request.session.username }}</a>
+              {% else %}
                 <a role="button" class="btn btn-primary welcome-btn" href="{% url 'login' %}">登录</a>
                 <a role="button" class="btn btn-primary welcome-btn" href="{% url 'register' %}">注册</a>
+              {% endif %}
             </div>
         </div>
     </div>
@@ -169,7 +177,6 @@ $(document).ready(function () {
             makeNoty(data.response.message);
         }
     });
-
 
     $(".js-upload-by-url").on("click", function () {
         var imageUrl = $(".js-image-url").val();

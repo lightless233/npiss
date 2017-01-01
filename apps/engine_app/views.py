@@ -108,7 +108,11 @@ class ApiUploadImageView(View):
 @method_decorator(csrf_exempt, name="dispatch")
 class ApiUploadURLView(View):
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
+
+        return JsonResponse(dict(code=1004, message="该功能尚未开放，敬请期待"))
+
         url = request.POST.get("url", "")
         if url == "":
             return JsonResponse(dict(code=1004, message=u"URL不能为空"))
