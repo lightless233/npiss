@@ -10,6 +10,7 @@ from django.views import View
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.shortcuts import redirect
 
 from .models import PissActiveCode
 from utils import CommonFunc
@@ -25,6 +26,10 @@ class DashboardView(View):
 
     @staticmethod
     def get(request):
+
+        if request.session.get("login") is not True:
+            return redirect("login")
+
         return render(request, "user_app/home_index.html")
 
 
@@ -35,10 +40,30 @@ class ImageListView(View):
 
     @staticmethod
     def get(request):
+
+        if request.session.get("login") is not True:
+            return redirect("login")
+
         return render(request, "user_app/home_image_list.html")
 
     @staticmethod
     def post(request):
         pass
 
+
+class LogoutView(View):
+    """
+    注销
+    """
+
+    @staticmethod
+    def get(request):
+
+        if request.session.get("login") is not True:
+            return redirect("login")
+
+        request.session.pop("user_id")
+        request.session.pop("username")
+        request.session.pop("login")
+        return redirect('index')
 

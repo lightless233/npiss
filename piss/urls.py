@@ -50,5 +50,6 @@ urlpatterns = [
     # 用户个人中心部分路由 开始 ##
     url(r'^home/index$', HomeController.DashboardView.as_view(), name="home_dashboard"),
     url(r'^home/images$', HomeController.ImageListView.as_view(), name="home_image_list"),
+    url(r'^home/logout$', HomeController.LogoutView.as_view(), name="logout"),
     # 用户个人中心部分路由 结束 ##
 ]

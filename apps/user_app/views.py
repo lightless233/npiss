@@ -43,6 +43,8 @@ class LoginView(View):
     @staticmethod
     def post(request):
 
+        # todo 重构
+
         # 获取参数
         username_or_email = request.POST.get("username_or_email", "")
         if username_or_email == "":
@@ -55,11 +57,17 @@ class LoginView(View):
             # 这是个邮箱地址
             qs = PissUser.objects.filter(email=username_or_email).first()
             if qs and qs.verify_password(password):
-                # 登录成功
-                request.session["login"] = True
-                request.session["user_id"] = qs.id
-                request.session["username"] = qs.username
-                return JsonResponse(dict(code=1001, message="登录成功，跳转中..."))
+
+                if qs.status == 9001:
+                    return JsonResponse(dict(code=1004, message="用户未激活"))
+                elif qs.status == 9003:
+                    return JsonResponse(dict(code=1004, message="用户被禁止登录"))
+                elif qs.status == 9002:
+                    # 登录成功
+                    request.session["login"] = True
+                    request.session["user_id"] = qs.id
+                    request.session["username"] = qs.username
+                    return JsonResponse(dict(code=1001, message="登录成功，跳转中..."))
             else:
                 # 登录失败
                 return JsonResponse(dict(code=1004, message=u"用户名或密码错误"))
@@ -67,11 +75,17 @@ class LoginView(View):
         else:
             qs = PissUser.objects.filter(username=username_or_email).first()
             if qs and qs.verify_password(password):
-                # 登录成功
-                request.session["login"] = True
-                request.session["user_id"] = qs.id
-                request.session["username"] = qs.username
-                return JsonResponse(dict(code=1001, message="登录成功，跳转中..."))
+
+                if qs.status == 9001:
+                    return JsonResponse(dict(code=1004, message="用户未激活"))
+                elif qs.status == 9003:
+                    return JsonResponse(dict(code=1004, message="用户被禁止登录"))
+                elif qs.status == 9002:
+                    # 登录成功
+                    request.session["login"] = True
+                    request.session["user_id"] = qs.id
+                    request.session["username"] = qs.username
+                    return JsonResponse(dict(code=1001, message="登录成功，跳转中..."))
             else:
                 # 登录失败
                 return JsonResponse(dict(code=1004, message=u"用户名或密码错误"))
