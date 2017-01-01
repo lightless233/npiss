@@ -92,6 +92,7 @@ class PissUserExtra(models.Model):
     access_key = models.CharField(max_length=40, blank=True)
     secret_key = models.CharField(max_length=40, blank=True)
     domain = models.CharField(max_length=255, blank=True)
+    bucket_name = models.CharField(max_length=64, blank=True)
 
     # 如果该字段为true，则使用qiniu相关的信息和链接
     # 如果该字段为False，则使用本站url,302到七牛链接

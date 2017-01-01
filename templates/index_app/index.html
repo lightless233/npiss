@@ -86,7 +86,7 @@
         </div>
     </div>
     <div class="col-md-1"></div>
-    <div class="col-md-10" style="margin-top: 120px">
+    <div class="col-md-10" style="margin-top: 50px">
         <div class="row title-box">
             <div class="col-md-12">
                 <div class="title">
@@ -122,47 +122,52 @@
     </div>
     <div class="col-md-1"></div>
 </div>
+  <div class="modal fade js-url-modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title">上传成功</h4>
+        </div>
+        <div class="modal-body">
+          <p class="js-modal-body"></p>
+          <p>如果您已经登录，稍后可至个人中心查看图片链接</p>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 {% endblock %}
 
 {% block script %}
     <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="/static/js/fileinput.min.js"></script>
     <script src="/static/js/zh.js"></script>
+    <script src="/static/js/common.js"></script>
 <script>
 $(document).ready(function () {
 
-    var upload_file_url = '/api/upload/file';
-    var upload_url_url = '/api/upload/url';
+    let upload_file_url = '/api/upload/file';
+    let upload_url_url = '/api/upload/url';
 
     $("#upload_file").fileinput({
         uploadUrl: upload_file_url,
         language: 'zh',
         maxFilePreviewSize: 10240,
         maxFileSize: 10240,
-        maxFileCount: 5,
+        maxFileCount: 1,
         dropZoneTitle: "拖动文件到这里",
-        allowedFileTypes: ['image']
+        allowedFileTypes: ['image'],
+        allowedFileExtensions: ["jpg", "jpeg", "png", "gif", "bmp"],
+        enctype: 'multipart/form-data',
     }).on("fileuploaded", function (event, data, previewId, index) {
-        console.log(data.response);
-        var notyType = "error";
+        // console.log(data.response);
+
         if (data.response.code == 1001) {
-            notyType = "success";
+          $(".js-modal-body").html(data.response.url);
+          $(".js-url-modal").modal();
+        } else {
+            makeNoty(data.response.message);
         }
-
-        noty({
-            layout: "center",
-            theme: "relax",
-            type: notyType,
-            text: data.response.message,
-            timeout: 5000,
-            animation: {
-                open: {height: 'toggle'},
-                close: {height: 'toggle'},
-                easing: 'swing',
-                speed: 500
-            }
-        });
-
     });
 
 
