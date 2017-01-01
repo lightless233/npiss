@@ -16,6 +16,7 @@ from django.views import View
 from django.http import JsonResponse
 from django.db.models import Q
 from django.core.urlresolvers import reverse
+from django.utils import timezone
 
 from .forms import RegisterForm
 from .models import PissUser
@@ -53,42 +54,35 @@ class LoginView(View):
         if password == "":
             return JsonResponse(dict(code=1004, message=u"请输入密码"))
 
+        # 取出qs记录
         if "@" in username_or_email:
-            # 这是个邮箱地址
             qs = PissUser.objects.filter(email=username_or_email).first()
-            if qs and qs.verify_password(password):
+        else:
+            qs = PissUser.objects.filter(username=username_or_email).first()
 
-                if qs.status == 9001:
-                    return JsonResponse(dict(code=1004, message="用户未激活"))
-                elif qs.status == 9003:
-                    return JsonResponse(dict(code=1004, message="用户被禁止登录"))
-                elif qs.status == 9002:
-                    # 登录成功
-                    request.session["login"] = True
-                    request.session["user_id"] = qs.id
-                    request.session["username"] = qs.username
-                    return JsonResponse(dict(code=1001, message="登录成功，跳转中..."))
+        if qs and qs.verify_password(password):
+
+            if qs.status == 9001:
+                return JsonResponse(dict(code=1004, message="用户未激活"))
+            elif qs.status == 9003:
+                return JsonResponse(dict(code=1004, message="用户被禁止登录"))
+            elif qs.status == 9002:
+                # 登录成功
+                request.session["login"] = True
+                request.session["user_id"] = qs.id
+                request.session["username"] = qs.username
+
+                # 更新最后登录时间和IP
+                qs.last_login_ip = request.META.get("REMOTE_ADDR")
+                qs.last_login_time = timezone.now()
+                qs.save()
+
+                return JsonResponse(dict(code=1001, message="登录成功，跳转中..."))
             else:
-                # 登录失败
                 return JsonResponse(dict(code=1004, message=u"用户名或密码错误"))
 
         else:
-            qs = PissUser.objects.filter(username=username_or_email).first()
-            if qs and qs.verify_password(password):
-
-                if qs.status == 9001:
-                    return JsonResponse(dict(code=1004, message="用户未激活"))
-                elif qs.status == 9003:
-                    return JsonResponse(dict(code=1004, message="用户被禁止登录"))
-                elif qs.status == 9002:
-                    # 登录成功
-                    request.session["login"] = True
-                    request.session["user_id"] = qs.id
-                    request.session["username"] = qs.username
-                    return JsonResponse(dict(code=1001, message="登录成功，跳转中..."))
-            else:
-                # 登录失败
-                return JsonResponse(dict(code=1004, message=u"用户名或密码错误"))
+            return JsonResponse(dict(code=1004, message=u"用户名或密码错误"))
 
 
 @method_decorator(csrf_exempt, name="dispatch")

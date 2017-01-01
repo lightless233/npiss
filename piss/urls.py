@@ -20,9 +20,9 @@ from django.contrib import admin
 from apps.index_app.views import IndexView
 from apps.engine_app.views import ApiUploadImageView
 from apps.engine_app.views import ApiUploadURLView
-from apps.user_app.views import LoginView
-from apps.user_app.views import RegisterView
-from apps.user_app.views import ValidEmailView
+from apps.user_app.UserController import LoginView
+from apps.user_app.UserController import RegisterView
+from apps.user_app.UserController import ValidEmailView
 from apps.user_app import ManagerController
 from apps.user_app import HomeController
 

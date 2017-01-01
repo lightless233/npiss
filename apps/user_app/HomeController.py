@@ -12,7 +12,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.shortcuts import redirect
 
-from .models import PissActiveCode
+from .models import PissUser
 from utils import CommonFunc
 
 __author__ = "lightless"
@@ -30,7 +30,18 @@ class DashboardView(View):
         if request.session.get("login") is not True:
             return redirect("login")
 
-        return render(request, "user_app/home_index.html")
+        user_id = request.session.get("user_id")
+        qs = PissUser.objects.filter(id=user_id).first()
+        # 获取用户总上传图片数量
+        total_image_num = 100
+
+        # 获取用户上次登录时间
+        last_login_time = qs.last_login_time.strftime("%Y-%m-%d %H:%M:%S")
+
+        context = {
+            'last_login_time': last_login_time,
+        }
+        return render(request, "user_app/home_index.html", context=context)
 
 
 class ImageListView(View):
