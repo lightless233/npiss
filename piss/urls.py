@@ -25,6 +25,7 @@ from apps.user_app.UserController import RegisterView
 from apps.user_app.UserController import ValidEmailView
 from apps.user_app import ManagerController
 from apps.user_app import HomeController
+from apps.engine_app import ShowController
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -52,4 +53,9 @@ urlpatterns = [
     url(r'^home/images$', HomeController.ImageListView.as_view(), name="home_image_list"),
     url(r'^home/logout$', HomeController.LogoutView.as_view(), name="logout"),
     # 用户个人中心部分路由 结束 ##
+
+    # 图片短链展示部分 开始 ##
+    url(r'^i/(?P<image_name>.+)$', ShowController.ShowNormalImages.as_view(), name="show_normal_image")
+    # 图片短链展示部分 结束 ##
+
 ]

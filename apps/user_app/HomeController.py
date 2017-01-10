@@ -11,8 +11,10 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django.db.models import Q
 
 from .models import PissUser
+from ..engine_app.models import PissImages
 from utils import CommonFunc
 
 __author__ = "lightless"
@@ -55,7 +57,18 @@ class ImageListView(View):
         if request.session.get("login") is not True:
             return redirect("login")
 
-        return render(request, "user_app/home_image_list.html")
+        all_images = list()
+        qs = PissImages.objects.filter(~Q(id=3))
+        for q in qs:
+            tmp = dict(
+                upload_time=q.created_time.strftime("%Y-%m-%d %H:%M:%S"), thumb_url=q.local_filename, image_id=q.id
+            )
+            all_images.append(tmp)
+
+        context = {
+            'all_images': all_images
+        }
+        return render(request, "user_app/home_image_list.html", context=context)
 
     @staticmethod
     def post(request):
