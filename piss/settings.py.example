@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ''
+SECRET_KEY = 'your secret key here.'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,6 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # user apps
+    'apps.engine_app.apps.EngineAppConfig',
+    'apps.index_app.apps.IndexAppConfig',
+    'apps.user_app.apps.UserAppConfig',
 ]
 
 MIDDLEWARE = [
@@ -74,10 +79,26 @@ WSGI_APPLICATION = 'piss.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
+# If on windows, please comment options section
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': 'localhost',
+        'NAME': 'piss',
+        'USER': 'root',
+        'PASSWORD': '123456',
+        'PORT': '3306',
+        'OPTIONS': {
+            # 'charset': 'utf8mb4',
+            'init_command': 'SET NAMES utf8mb4',
+        }
     }
 }
 
@@ -106,16 +127,28 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
+# Custom Settings
+DOMAIN = "http://127.0.0.1:8000/"
+IMAGE_TMP_PATH = '/tmp/piss/'
+IMAGE_THUMB_PATH = '/tmp/piss/thumb/'
+WIN_IMAGE_TMP_PATH = './tmp/'
+WIN_IMAGE_THUMB_PATH = './tmp/thumb/'
+MANAGE_TOKEN = 'your token here'
+
