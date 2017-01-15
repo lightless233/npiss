@@ -63,8 +63,20 @@ class ShowThumbImages(View):
     """
 
     @staticmethod
-    def get(request):
-        pass
+    def get(request, image_name):
+        qs = PissImages.objects.filter(local_filename=image_name).first()
+        if not qs:
+            return HttpResponseNotFound('Page not found.')
+
+        # 根据系统选取不同的PATH
+        if "Windows" in platform.system():
+            image_full_path = settings.WIN_IMAGE_THUMB_PATH
+        else:
+            image_full_path = settings.IMAGE_THUMB_PATH
+
+        image_file = image_full_path + image_name
+        image_data = open(image_file, "rb").read()
+        return HttpResponse(image_data, content_type="image")
 
 
 @method_decorator(csrf_exempt, name="dispatch")
