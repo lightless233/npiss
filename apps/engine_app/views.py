@@ -1,6 +1,8 @@
 #!/usr/bin/env python2
 # coding: utf8
 
+from __future__ import unicode_literals
+
 import os
 import platform
 from cStringIO import StringIO
@@ -17,7 +19,6 @@ import qiniu
 import qiniu.config
 
 from .models import PissImages
-from ..user_app.models import PissUser
 from ..user_app.models import PissUserExtra
 from utils.security import safe_request
 from utils.logHelper import logger
@@ -96,7 +97,7 @@ class ApiUploadImageView(View):
         p_image = PissImages()
         p_image.user_id = user_id
         p_image.qiniu_filename = qiniu_filename
-        p_image.local_filename = local_file
+        p_image.local_filename = tmp_filename + "." + suffix
         qiniu_url = qs.domain + "/" + qiniu_filename
         p_image.qiniu_url = qiniu_url
         p_image.piss_url = settings.DOMAIN + qiniu_filename

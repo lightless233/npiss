@@ -7,6 +7,9 @@ from __future__ import print_function
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.http import HttpResponseNotFound
+
+from .models import PissImages
 
 __author__ = 'lightless'
 __email__ = 'root@lightless.me'
@@ -21,7 +24,10 @@ class ShowNormalImages(View):
 
     @staticmethod
     def get(request, image_name):
-        print(image_name)
+        qs = PissImages.objects.filter(local_filename=image_name).first()
+        if not qs:
+            return HttpResponseNotFound('Page not found.')
+
 
 
 @method_decorator(csrf_exempt, name="dispatch")
