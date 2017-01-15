@@ -2,7 +2,7 @@
 
 ## 新版本新功能
 NPISS(PISS 2.0)是一款私人图床工具，基于七牛SDK，可以快速搭建自己的私人图床系统。
-!(Pic1)[https://raw.githubusercontent.com/LiGhT1EsS/npiss/master/docs/1.png]
+![Pic1](https://raw.githubusercontent.com/LiGhT1EsS/npiss/master/docs/1.png)
 
 
 ## 安装
