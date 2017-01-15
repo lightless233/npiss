@@ -13,7 +13,7 @@ NPISS(PISS 2.0)是一款私人图床工具，基于七牛SDK，可以快速搭�
     ```
     
 3. 安装依赖
-    ```
+    ```
     yum install mysql-devel
     pip install -r requirements.txt
     ```
