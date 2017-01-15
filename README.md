@@ -9,15 +9,15 @@ NPISS(PISS 2.0)是一款私人图床工具，基于七牛SDK，可以快速搭�
 2. 新建数据库piss
     ```create database npiss charset utf8mb4```
 3. 安装依赖
-```
-yum install mysql-devel
-pip install -r requirements.txt
-```
+    ```
+    yum install mysql-devel
+    pip install -r requirements.txt
+    ```
 4. 建立数据表并运行
-```
-python manage.py migrate
-python manage.py runserver
-```
+    ```
+    python manage.py migrate
+    python manage.py runserver
+    ```
 
 5. 使用supervisor进行守护（可选）
 
