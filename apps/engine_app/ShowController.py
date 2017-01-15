@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.http import HttpResponseNotFound
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.conf import settings
 
 from .models import PissImages
@@ -87,10 +88,10 @@ class ShowOriginImages(View):
     """
 
     @staticmethod
-    def get(request):
-        """
+    def get(request, image_name):
+        qs = PissImages.objects.filter(local_filename=image_name).first()
+        if not qs:
+            return HttpResponseNotFound('Page not found.')
 
-        :param request:
-        :return:
-        """
-        pass
+        qiniu_url = qs.qiniu_url
+        return HttpResponseRedirect(qiniu_url.strip())
