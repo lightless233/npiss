@@ -55,7 +55,8 @@ urlpatterns = [
     # 用户个人中心部分路由 结束 ##
 
     # 图片短链展示部分 开始 ##
-    url(r'^i/(?P<image_name>.+)$', ShowController.ShowNormalImages.as_view(), name="show_normal_image")
+    url(r'^i/(?P<image_name>.+)$', ShowController.ShowNormalImages.as_view(), name="show_normal_image"),
+    url(r'^t/(?P<image_name>.+)$', ShowController.ShowThumbImages.as_view(), name="show_thumb_image"),
     # 图片短链展示部分 结束 ##
 
 ]

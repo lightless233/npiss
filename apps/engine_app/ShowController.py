@@ -4,10 +4,14 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
+import platform
+
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.http import HttpResponseNotFound
+from django.http import HttpResponse
+from django.conf import settings
 
 from .models import PissImages
 
@@ -28,6 +32,15 @@ class ShowNormalImages(View):
         if not qs:
             return HttpResponseNotFound('Page not found.')
 
+        # 根据系统选取不同的PATH
+        if "Windows" in platform.system():
+            image_full_path = settings.WIN_IMAGE_TMP_PATH
+        else:
+            image_full_path = settings.IMAGE_TMP_PATH
+
+        image_file = image_full_path + image_name
+        image_data = open(image_file, "rb").read()
+        return HttpResponse(image_data, content_type="image")
 
 
 @method_decorator(csrf_exempt, name="dispatch")
