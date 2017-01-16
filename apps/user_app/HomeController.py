@@ -35,13 +35,14 @@ class DashboardView(View):
         user_id = request.session.get("user_id")
         qs = PissUser.objects.filter(id=user_id).first()
         # 获取用户总上传图片数量
-        total_image_num = 100
+        total_image_num = PissImages.objects.filter(user_id=user_id).count()
 
         # 获取用户上次登录时间
         last_login_time = qs.last_login_time.strftime("%Y-%m-%d %H:%M:%S")
 
         context = {
             'last_login_time': last_login_time,
+            "total_image_num": total_image_num,
         }
         return render(request, "user_app/home_index.html", context=context)
 
