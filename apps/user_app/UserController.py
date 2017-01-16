@@ -17,6 +17,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.utils import timezone
+from django.core.mail import send_mail
 
 from .forms import RegisterForm
 from .models import PissUser
@@ -142,6 +143,13 @@ class RegisterView(View):
             active_link = request.build_absolute_uri(reverse("validate_email")) + "?info={info}&sign={sign}"
             active_link = active_link.format(info=info, sign=sign)
             logger.info(active_link)
+            send_mail(
+                '[PISS] 请激活您的PISS账户',
+                '您的激活链接为：{0}'.format(active_link),
+                'piss.support@vidar.club',
+                [email],
+                fail_silently=False,
+            )
 
             send_mail_thread = threading.Thread(target=send_mail_thread_func, kwargs={"active_link": active_link})
             send_mail_thread.start()
