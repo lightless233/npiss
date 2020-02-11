@@ -2,7 +2,7 @@
 colorama==0.3.7
 colorlog==2.10.0
 curtsies==0.2.11
-Django==1.11.23
+Django==1.11.28
 greenlet==0.4.11
 MySQL-python==1.2.5
 Pillow==6.2.0
